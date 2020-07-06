@@ -1,14 +1,20 @@
 package com.codepath.tsazo.trinstagram;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 /**
  * A login screen that offers login via username/password
@@ -40,8 +46,34 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // Checks if the user has entered in the proper login credentials, if so, user is taken to the MainActivity
     private void loginUser(String username, String password) {
         Log.i(TAG, "Attempting to login user: " + username);
-        //TODO: navigate to main activity if the user has
+
+        // logInInBackground preferred to execute this login in the background thread
+        // rather than the main thread (helps UX)
+        ParseUser.logInInBackground(username, password, new LogInCallback() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                if(e != null) {
+                    // TODO: better error handling
+                    Log.e(TAG, "Issue with login", e);
+                    Toast.makeText(LoginActivity.this, "Issue with login!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //TODO: navigate to main activity if the user has signed in properly
+                goMainActivity();
+                Toast.makeText(LoginActivity.this, "Successfully logged in!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Creates a flow (using Intents) to the MainActivity
+    private void goMainActivity() {
+        // Intent(this context, activity I want to navigate to)
+        Intent i = new Intent(this, MainActivity.class);
+
+        startActivity(i);
     }
 }
