@@ -32,6 +32,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // First check if user is already logged in
+        if (ParseUser.getCurrentUser() != null)
+            goMainActivity();
+
+
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
@@ -73,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
     private void goMainActivity() {
         // Intent(this context, activity I want to navigate to)
         Intent i = new Intent(this, MainActivity.class);
-
         startActivity(i);
+        finish();
     }
 }
