@@ -62,11 +62,6 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void goSignupActivity() {
-        Intent i = new Intent(this, SignupActivity.class);
-        startActivity(i);
-        finish();
-    }
 
     // Checks if the user has entered in the proper login credentials, if so, user is taken to the MainActivity
     private void loginUser(String username, String password) {
@@ -95,6 +90,13 @@ public class LoginActivity extends AppCompatActivity {
     private void goMainActivity() {
         // Intent(this context, activity I want to navigate to)
         Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+        finish();
+    }
+
+    // Goes to SignupActivity on click
+    private void goSignupActivity() {
+        Intent i = new Intent(this, SignupActivity.class);
         startActivity(i);
         finish();
     }
