@@ -11,29 +11,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="username"/>
+        android:hint="Username"/>
 
     <EditText
         android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editTextUsername"
-        android:hint="password"
+        android:hint="Password"
         android:password="true" />
 
-    <Button
-        android:id="@+id/buttonLogin"
+    <EditText
+        android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editTextPassword"
-        android:layout_marginTop="10dp"
-        android:text="Login"/>
+        android:hint="Email" />
 
     <Button
         android:id="@+id/buttonSignup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonLogin"
+        android:layout_below="@+id/editTextEmail"
         android:layout_marginTop="10dp"
         android:text="Signup"/>
 </RelativeLayout>
