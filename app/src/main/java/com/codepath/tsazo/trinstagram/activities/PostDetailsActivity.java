@@ -1,0 +1,59 @@
+package com.codepath.tsazo.trinstagram.activities;
+
+        import androidx.appcompat.app.AppCompatActivity;
+        import androidx.fragment.app.FragmentManager;
+
+        import android.content.Intent;
+        import android.os.Bundle;
+        import android.view.View;
+        import android.widget.ImageView;
+        import android.widget.TextView;
+
+        import com.bumptech.glide.Glide;
+        import com.codepath.tsazo.trinstagram.Post;
+        import com.codepath.tsazo.trinstagram.R;
+        import com.codepath.tsazo.trinstagram.databinding.ActivityPostDetailsBinding;
+        import com.parse.ParseFile;
+
+        import org.parceler.Parcels;
+
+public class PostDetailsActivity extends AppCompatActivity {
+
+    private static final String TAG = "PostDetailsActivity";
+    private static ActivityPostDetailsBinding binding;
+    final FragmentManager fragmentManager = getSupportFragmentManager();
+
+    // the Post to display
+    private Post post;
+
+    // the view objects
+    private TextView textViewUsername;
+    private TextView textViewDescription;
+    private ImageView imageViewImage;
+    private TextView textViewTime;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_post_details);
+
+        textViewUsername = findViewById(R.id.textViewUsername);
+        imageViewImage = findViewById(R.id.imageViewImage);
+        textViewDescription = findViewById(R.id.textViewDescription);
+
+        // Unwrap the movie passed in via intent, using its simple name as a key
+        post = (Post) Parcels.unwrap(getIntent().getParcelableExtra(Post.class.getSimpleName()));
+
+        setValues();
+    }
+
+    // Method to set the values into the views
+    private void setValues() {
+        textViewDescription.setText(post.getDescription());
+        textViewUsername.setText(post.getUser().getUsername());
+        //textViewTime.setText(post.getTime());
+        ParseFile image = post.getImage();
+        if(image != null)
+            Glide.with(this).load(post.getImage().getUrl()).fitCenter().into(imageViewImage);
+    }
+}

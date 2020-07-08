@@ -1,4 +1,4 @@
-package com.codepath.tsazo.trinstagram;
+package com.codepath.tsazo.trinstagram.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.parse.LogInCallback;
+import com.codepath.tsazo.trinstagram.R;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
