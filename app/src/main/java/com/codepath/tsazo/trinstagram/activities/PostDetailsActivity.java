@@ -11,6 +11,7 @@ package com.codepath.tsazo.trinstagram.activities;
 
         import com.bumptech.glide.Glide;
         import com.codepath.tsazo.trinstagram.Post;
+        import com.codepath.tsazo.trinstagram.PostsAdapter;
         import com.codepath.tsazo.trinstagram.R;
         import com.codepath.tsazo.trinstagram.databinding.ActivityPostDetailsBinding;
         import com.parse.ParseFile;
@@ -40,6 +41,7 @@ public class PostDetailsActivity extends AppCompatActivity {
         textViewUsername = findViewById(R.id.textViewUsername);
         imageViewImage = findViewById(R.id.imageViewImage);
         textViewDescription = findViewById(R.id.textViewDescription);
+        textViewTime = findViewById(R.id.textViewTime);
 
         // Unwrap the movie passed in via intent, using its simple name as a key
         post = (Post) Parcels.unwrap(getIntent().getParcelableExtra(Post.class.getSimpleName()));
@@ -51,7 +53,7 @@ public class PostDetailsActivity extends AppCompatActivity {
     private void setValues() {
         textViewDescription.setText(post.getDescription());
         textViewUsername.setText(post.getUser().getUsername());
-        //textViewTime.setText(post.getTime());
+        textViewTime.setText(PostsAdapter.getRelativeTimeAgo(post.getCreatedAt()));
         ParseFile image = post.getImage();
         if(image != null)
             Glide.with(this).load(post.getImage().getUrl()).fitCenter().into(imageViewImage);

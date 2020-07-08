@@ -2,6 +2,7 @@ package com.codepath.tsazo.trinstagram;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +19,22 @@ import com.parse.ParseFile;
 
 import org.parceler.Parcels;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
 
     private static final String TAG = "PostsAdapter";
     private Context context;
     private List<Post> posts;
+
+    // TIME CONSTANTS
+    private static final int SECOND_MILLIS = 1000;
+    private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
+    private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
+    private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
     public PostsAdapter(Context context, List<Post> posts) {
         this.context = context;
@@ -55,6 +65,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
         private TextView textViewUsername;
         private TextView textViewDescription;
+        private TextView textViewTime;
         private ImageView imageViewImage;
 
         public ViewHolder(@NonNull View itemView) {
@@ -63,6 +74,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             textViewUsername = itemView.findViewById(R.id.textViewUsername);
             textViewDescription = itemView.findViewById(R.id.textViewDescription);
             imageViewImage = itemView.findViewById(R.id.imageViewImage);
+            textViewTime = itemView.findViewById(R.id.textViewTime);
 
             itemView.setOnClickListener(this);
         }
@@ -71,6 +83,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             // Bind the post data to the view elements
             textViewDescription.setText(post.getDescription());
             textViewUsername.setText(post.getUser().getUsername());
+            textViewTime.setText(getRelativeTimeAgo(post.getCreatedAt()));
             ParseFile image = post.getImage();
             if(image != null)
                 Glide.with(context).load(post.getImage().getUrl()).fitCenter().into(imageViewImage);
@@ -97,6 +110,19 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 context.startActivity(intent);
             }
         }
+    }
+
+    // Returns relative time a post was created
+    public static String getRelativeTimeAgo(Date date) {
+        String format = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(format, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        String timespan = "";
+        long dateMillis = date.getTime();
+        timespan = DateUtils.getRelativeTimeSpanString(dateMillis, System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
+
+        return timespan;
     }
 
     // Clean all elements of the recycler
