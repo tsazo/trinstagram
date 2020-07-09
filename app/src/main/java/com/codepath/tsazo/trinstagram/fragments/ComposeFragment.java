@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.codepath.tsazo.trinstagram.Post;
@@ -46,6 +47,7 @@ public class ComposeFragment extends Fragment {
     private Button buttonSubmit;
     private File photoFile;
     public String photoFileName = "photo.jpg";
+    private ProgressBar pb;
 
     public ComposeFragment() {
         // Required empty public constructor
@@ -71,6 +73,7 @@ public class ComposeFragment extends Fragment {
         buttonTakePicture = view.findViewById(R.id.buttonTakePicture);
         imageViewPreview = view.findViewById(R.id.imageViewPreview);
         buttonSubmit = view.findViewById(R.id.buttonSubmit);
+        pb = (ProgressBar) view.findViewById(R.id.pbLoading);
 
         // On take picture, open camera (or even camera roll)
         buttonTakePicture.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +91,10 @@ public class ComposeFragment extends Fragment {
             public void onClick(View view) {
                 Log.i(TAG, "Submit button clicked");
 
+                // Indeterminate progress bar!
+                // on some click or some loading we need to wait for...
+                pb.setVisibility(ProgressBar.VISIBLE);
+
                 String description = editTextDescription.getText().toString();
                 if(description.isEmpty()){
                     Toast.makeText(getContext(), "Description cannot be empty.", Toast.LENGTH_SHORT).show();
@@ -102,6 +109,8 @@ public class ComposeFragment extends Fragment {
                 ParseUser currentUser = ParseUser.getCurrentUser();
                 savePost(description, currentUser, photoFile);
 
+                // run a background job and once complete
+                pb.setVisibility(ProgressBar.INVISIBLE);
             }
 
         });

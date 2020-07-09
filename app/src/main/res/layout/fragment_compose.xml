@@ -7,6 +7,12 @@
     android:orientation="vertical"
     tools:context=".fragments.ComposeFragment">
 
+    <ProgressBar
+        android:id="@+id/pbLoading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
+
     <EditText
         android:id="@+id/editTextDescription"
         android:layout_width="match_parent"
@@ -49,4 +55,5 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="10dp"
         android:text="SUBMIT" />
+
 </LinearLayout>
