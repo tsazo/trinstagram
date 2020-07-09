@@ -1,10 +1,13 @@
 package com.codepath.tsazo.trinstagram.activities;
 
+        import androidx.appcompat.app.ActionBar;
         import androidx.appcompat.app.AppCompatActivity;
         import androidx.fragment.app.FragmentManager;
 
         import android.content.Intent;
+        import android.graphics.drawable.ColorDrawable;
         import android.os.Bundle;
+        import android.view.Menu;
         import android.view.View;
         import android.widget.ImageView;
         import android.widget.TextView;
@@ -47,6 +50,17 @@ public class PostDetailsActivity extends AppCompatActivity {
         post = (Post) Parcels.unwrap(getIntent().getParcelableExtra(Post.class.getSimpleName()));
 
         setValues();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.white)));
+        getSupportActionBar().setLogo(R.drawable.nav_logo_whiteout);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        return true;
     }
 
     // Method to set the values into the views
