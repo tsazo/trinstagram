@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.codepath.tsazo.trinstagram.EndlessRecyclerViewScrollListener;
 import com.codepath.tsazo.trinstagram.Post;
 import com.codepath.tsazo.trinstagram.PostsAdapter;
 import com.codepath.tsazo.trinstagram.R;
@@ -21,9 +22,12 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Headers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +35,8 @@ import java.util.List;
 public class PostsFragment extends Fragment {
 
     public static final String TAG = "PostsFragment";
+    private static final int POST_LIMIT = 2;
+    private EndlessRecyclerViewScrollListener scrollListener;
     private RecyclerView recyclerViewPosts;
     protected PostsAdapter adapter;
     protected List<Post> allPosts;
@@ -61,10 +67,28 @@ public class PostsFragment extends Fragment {
         adapter = new PostsAdapter(getContext(), allPosts);
 
         recyclerViewPosts.setAdapter(adapter);
-        recyclerViewPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // RecyclerView setup: layout manager and the adapter
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerViewPosts.setLayoutManager(layoutManager);
+        recyclerViewPosts.setAdapter(adapter);
+
+        // Scroll listener for endless scrolling
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                Log.i(TAG, "onLoadMore: " + page);
+
+                //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+                loadNextDataFromApi(page);
+            }
+        };
+
+        // Adds the endless scroll listener to RecyclerView
+        recyclerViewPosts.addOnScrollListener(scrollListener);
 
         // Lookup the swipe container view
-        swipeContainer = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipeContainer);
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -85,11 +109,39 @@ public class PostsFragment extends Fragment {
         queryPosts();
     }
 
+    // Append the next page of data into the adapter
+    // This method sends out a network request and appends new data items to your adapter.
+    public void loadNextDataFromApi(int page) {
+        // Send an API request to retrieve appropriate paginated data
+        Log.i(TAG, "Loading next data");
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        query.include(Post.KEY_USER);
+        query.setLimit(POST_LIMIT);
+        query.addDescendingOrder(Post.KEY_CREATED_AT);
+        query.whereLessThan(Post.KEY_CREATED_AT, allPosts.get(POST_LIMIT * (page) - 1).getCreatedAt());
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> posts, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting posts", e);
+                    return;
+                }
+                for (Post post : posts) {
+                    Log.i(TAG, "Post: " + post.getDescription() + " Username: " + post.getUser().getUsername());
+                }
+                allPosts.addAll(posts);
+                Log.i(TAG, "" + allPosts.size());
+                adapter.notifyDataSetChanged();
+                Log.i(TAG, "Query older posts finished");
+            }
+        });
+    }
+
     protected void queryPosts() {
         // Specify which class to query
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.include(Post.KEY_USER);
-        query.setLimit(20);
+        query.setLimit(POST_LIMIT);
         query.addDescendingOrder(Post.KEY_CREATED_AT);
         query.findInBackground(new FindCallback<Post>() {
             @Override
@@ -105,6 +157,7 @@ public class PostsFragment extends Fragment {
 
                 allPosts.addAll(posts);
                 adapter.notifyDataSetChanged();
+                scrollListener.resetState();
             }
         });
     }
