@@ -127,14 +127,12 @@ public class SettingsFragment extends Fragment {
 
         if(image != null) {
             // Binds image to ViewHolder with rounded corners
-            int radius = 360; // corner radius, higher value = more rounded
-            int margin = 0; // crop margin, set to 0 for corners with no crop
             Log.i(TAG, String.valueOf(currentUser.getParseFile(KEY_PROFILE_PIC).getUrl()));
 
             Glide.with(getContext())
                     .load(currentUser.getParseFile(KEY_PROFILE_PIC).getUrl())
                     .fitCenter()
-                    .transform(new RoundedCornersTransformation(radius, margin))
+                    .circleCrop()
                     .into(imageViewProfile);
         }
     }

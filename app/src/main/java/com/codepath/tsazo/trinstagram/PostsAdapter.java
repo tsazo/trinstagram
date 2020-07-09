@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.tsazo.trinstagram.activities.PostDetailsActivity;
+import com.parse.Parse;
 import com.parse.ParseFile;
 
 import org.parceler.Parcels;
@@ -29,6 +30,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     private static final String TAG = "PostsAdapter";
     private Context context;
     private List<Post> posts;
+    private static final String KEY_PROFILE_PIC = "profilePicture";
 
     // TIME CONSTANTS
     private static final int SECOND_MILLIS = 1000;
@@ -67,6 +69,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         private TextView textViewDescription;
         private TextView textViewTime;
         private ImageView imageViewImage;
+        private ImageView imageViewProfile;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,6 +78,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             textViewDescription = itemView.findViewById(R.id.textViewDescription);
             imageViewImage = itemView.findViewById(R.id.imageViewImage);
             textViewTime = itemView.findViewById(R.id.textViewTime);
+            imageViewProfile = itemView.findViewById(R.id.imageViewProfile);
 
             itemView.setOnClickListener(this);
         }
@@ -84,9 +88,17 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             textViewDescription.setText(post.getDescription());
             textViewUsername.setText(post.getUser().getUsername());
             textViewTime.setText(getRelativeTimeAgo(post.getCreatedAt()));
-            ParseFile image = post.getImage();
-            if(image != null)
+            ParseFile postImage = post.getImage();
+            if(postImage != null)
                 Glide.with(context).load(post.getImage().getUrl()).fitCenter().into(imageViewImage);
+
+            String profileImage = post.getUser().getParseFile(KEY_PROFILE_PIC).getUrl();
+            if(profileImage != null) {
+                Glide.with(context).load(profileImage)
+                        .fitCenter()
+                        .circleCrop()
+                        .into(imageViewProfile);
+            }
         }
 
         @Override
