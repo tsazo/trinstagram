@@ -9,7 +9,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -25,6 +24,8 @@ import android.widget.Toast;
 
 import com.codepath.tsazo.trinstagram.Post;
 import com.codepath.tsazo.trinstagram.R;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -33,6 +34,7 @@ import com.parse.SaveCallback;
 import java.io.File;
 
 import static android.app.Activity.RESULT_OK;
+import static com.parse.Parse.getApplicationContext;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,6 +76,11 @@ public class ComposeFragment extends Fragment {
         imageViewPreview = view.findViewById(R.id.imageViewPreview);
         buttonSubmit = view.findViewById(R.id.buttonSubmit);
         pb = (ProgressBar) view.findViewById(R.id.pbLoading);
+        String apiKey = getString(R.string.api_key);
+
+        // Initialize places for Google places
+        initializePlaces(apiKey);
+
 
         // On take picture, open camera (or even camera roll)
         buttonTakePicture.setOnClickListener(new View.OnClickListener() {
@@ -114,8 +121,20 @@ public class ComposeFragment extends Fragment {
             }
 
         });
+    }
 
-        // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
+    // initializes Google Places
+    private void initializePlaces(String apiKey) {
+        /**
+         * Initialize Places. For simplicity, the API key is hard-coded. In a production
+         * environment we recommend using a secure mechanism to manage API keys.
+         */
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), apiKey);
+        }
+
+        // Create a new Places client instance.
+        PlacesClient placesClient = Places.createClient(getContext());
     }
 
     // Launches the camera with an Intent

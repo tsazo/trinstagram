@@ -31,6 +31,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     private Context context;
     private List<Post> posts;
     private static final String KEY_PROFILE_PIC = "profilePicture";
+    //private PlaceDetectionClient mPlaceDetectionClient;
 
     // TIME CONSTANTS
     private static final int SECOND_MILLIS = 1000;
