@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -76,11 +77,6 @@ public class ComposeFragment extends Fragment {
         imageViewPreview = view.findViewById(R.id.imageViewPreview);
         buttonSubmit = view.findViewById(R.id.buttonSubmit);
         pb = (ProgressBar) view.findViewById(R.id.pbLoading);
-        String apiKey = getString(R.string.api_key);
-
-        // Initialize places for Google places
-        initializePlaces(apiKey);
-
 
         // On take picture, open camera (or even camera roll)
         buttonTakePicture.setOnClickListener(new View.OnClickListener() {
@@ -121,20 +117,6 @@ public class ComposeFragment extends Fragment {
             }
 
         });
-    }
-
-    // initializes Google Places
-    private void initializePlaces(String apiKey) {
-        /**
-         * Initialize Places. For simplicity, the API key is hard-coded. In a production
-         * environment we recommend using a secure mechanism to manage API keys.
-         */
-        if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), apiKey);
-        }
-
-        // Create a new Places client instance.
-        PlacesClient placesClient = Places.createClient(getContext());
     }
 
     // Launches the camera with an Intent

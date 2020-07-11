@@ -1,5 +1,6 @@
 package com.codepath.tsazo.trinstagram.activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -12,29 +13,35 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.codepath.tsazo.trinstagram.Post;
 import com.codepath.tsazo.trinstagram.PostsAdapter;
 import com.codepath.tsazo.trinstagram.R;
 import com.codepath.tsazo.trinstagram.databinding.ActivityPostDetailsBinding;
+import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.parse.ParseFile;
 
 import org.parceler.Parcels;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class PostDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = "PostDetailsActivity";
-
-    //Google places client
-    private PlacesClient placesClient;
-    private static final String API_KEY = "AIzaSyB33o9qfsYo0BoA_oBOVAxN4XmQaamWIv4";
 
     // the Post to display
     private Post post;
@@ -56,26 +63,6 @@ public class PostDetailsActivity extends AppCompatActivity {
         imageViewImage = findViewById(R.id.imageViewImage);
         textViewDescription = findViewById(R.id.textViewDescription);
         textViewTime = findViewById(R.id.textViewTime);
-
-        // Initialize Places.
-        Places.initialize(getApplicationContext(), API_KEY);
-
-        // Create a new Places client instance.
-        placesClient = Places.createClient(this);
-        Log.i(TAG, String.valueOf(placesClient));
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-
-        //placesClient.findCurrentPlace();
 
         // Unwrap the movie passed in via intent, using its simple name as a key
         post = (Post) Parcels.unwrap(getIntent().getParcelableExtra(Post.class.getSimpleName()));
@@ -106,4 +93,5 @@ public class PostDetailsActivity extends AppCompatActivity {
         if(image != null)
             Glide.with(this).load(post.getImage().getUrl()).fitCenter().into(imageViewImage);
     }
+
 }
